@@ -9,16 +9,17 @@ import { useSPCTheme } from '@/providers/ThemeProvider';
 import { FileBank } from '@/components/FileBank';
 import { UploadModal } from '@/components/UploadModal';
 import { UserManagement } from '@/components/UserManagement';
-import { DownloadHistory } from '@/components/DownloadHistory'; // Ensure this component exists
+import { DownloadHistory } from '@/components/DownloadHistory';
+import { FileItem } from '@/types/dashboard'; // Imported the new type
 import { 
   Upload, 
   UserCircle, 
   Download, 
   ArrowRight, 
-  LayoutDashboard 
+  LayoutDashboard,
+  Loader2 
 } from 'lucide-react';
 
-// Define valid views for strict TypeScript checking
 type DashboardView = 'files' | 'users' | 'history';
 
 export default function AdminDashboard() {
@@ -28,7 +29,9 @@ export default function AdminDashboard() {
 
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [activeView, setActiveView] = useState<DashboardView>('files');
-  const [files, setFiles] = useState([
+  
+  // Typed the files state strictly
+  const [files, setFiles] = useState<FileItem[]>([
     { id: '1', name: 'SPC_System_Core_v2.bin', size: '1.2 GB', type: 'EXE', updatedAt: '2026-05-12' },
     { id: '2', name: 'Database_Backup_May.sql', size: '450 MB', type: 'SQL', updatedAt: '2026-05-10' },
     { id: '3', name: 'UI_Brand_Guidelines.pdf', size: '12 MB', type: 'PDF', updatedAt: '2026-05-08' },
@@ -44,17 +47,15 @@ export default function AdminDashboard() {
     }
   }, [user, loading, router]);
 
-  const handleUploadComplete = (newFile: any) => {
+  // Updated parameter type from 'any' to 'FileItem'
+  const handleUploadComplete = (newFile: FileItem) => {
     setFiles((prev) => [newFile, ...prev]);
   };
 
   if (!user || loading || user.role !== 'admin') {
     return (
-      <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: colors.background }}>
-        <div 
-          className="w-10 h-10 border-4 border-t-transparent rounded-full animate-spin" 
-          style={{ borderColor: `${colors.primary}33`, borderTopColor: colors.primary }}
-        />
+      <div className="flex flex-col items-center justify-center h-screen bg-slate-50">
+        <Loader2 className="w-10 h-10 animate-spin text-emerald-500" />
       </div>
     );
   }
@@ -75,8 +76,8 @@ export default function AdminDashboard() {
         <BentoCard className="md:col-span-4">
           <div className="flex flex-col md:flex-row justify-between md:items-center gap-6">
             <div className="space-y-1">
-              <p style={{ color: colors.primary }} className="text-[10px] font-black uppercase tracking-widest">Active Session</p>
-              <h2 className="text-3xl font-black tracking-tight" style={{ color: colors.textMain }}>{user.name}</h2>
+              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Active Session</p>
+              <h2 className="text-3xl font-black tracking-tight text-slate-900">{user.name}</h2>
               <p className="text-emerald-600/40 text-xs font-medium italic">
                 "Node {activeView.toUpperCase()} Protocol Active"
               </p>
@@ -108,14 +109,14 @@ export default function AdminDashboard() {
           <button 
             onClick={() => setActiveView('users')}
             className={`group flex items-center justify-between p-5 bg-white border rounded-3xl transition-all hover:shadow-xl hover:shadow-emerald-500/5 text-left 
-              ${activeView === 'users' ? 'border-emerald-500 ring-2 ring-emerald-500/10' : 'border-zinc-100'}`}
+              ${activeView === 'users' ? 'border-emerald-500 ring-2 ring-emerald-500/10 shadow-lg shadow-emerald-500/5' : 'border-zinc-100'}`}
           >
             <div className="flex items-center gap-4">
               <div className={`p-3 rounded-xl transition-colors ${activeView === 'users' ? 'bg-emerald-500 text-white' : 'bg-emerald-50/50 text-emerald-600'}`}>
                 <UserCircle className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-bold" style={{ color: colors.textMain }}>Manage Account</p>
+                <p className="text-sm font-bold text-slate-900">Manage Account</p>
                 <p className="text-[10px] text-emerald-600/40 font-black uppercase tracking-wider">Directory</p>
               </div>
             </div>
@@ -126,14 +127,14 @@ export default function AdminDashboard() {
           <button 
             onClick={() => setActiveView('history')}
             className={`group flex items-center justify-between p-5 bg-white border rounded-3xl transition-all hover:shadow-xl hover:shadow-emerald-500/5 text-left 
-              ${activeView === 'history' ? 'border-emerald-500 ring-2 ring-emerald-500/10' : 'border-zinc-100'}`}
+              ${activeView === 'history' ? 'border-emerald-500 ring-2 ring-emerald-500/10 shadow-lg shadow-emerald-500/5' : 'border-zinc-100'}`}
           >
             <div className="flex items-center gap-4">
               <div className={`p-3 rounded-xl transition-colors ${activeView === 'history' ? 'bg-emerald-500 text-white' : 'bg-emerald-50/50 text-emerald-600'}`}>
                 <Download className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-bold" style={{ color: colors.textMain }}>Download Logs</p>
+                <p className="text-sm font-bold text-slate-900">Download Logs</p>
                 <p className="text-[10px] text-emerald-600/40 font-black uppercase tracking-wider">Access Documentation</p>
               </div>
             </div>
@@ -145,9 +146,7 @@ export default function AdminDashboard() {
         <div className="md:col-span-6">
           {activeView === 'files' ? (
             <BentoCard title="Your Files">
-              <div className="bg-white">
-                <FileBank role="admin" files={files} />
-              </div>
+              <FileBank role="admin" files={files} />
             </BentoCard>
           ) : activeView === 'users' ? (
             <UserManagement />
@@ -159,7 +158,7 @@ export default function AdminDashboard() {
         {/* Activity Log Footer */}
         <BentoCard title="System Activity" className="md:col-span-6">
           <div className="space-y-2">
-            <div className="flex items-center gap-4 text-xs p-4 bg-white rounded-xl border border-emerald-500/5">
+            <div className="flex items-center gap-4 text-xs p-4 bg-white rounded-xl border border-emerald-500/5 shadow-sm">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               <p className="text-slate-600">
                 Viewing <span className="font-bold uppercase text-emerald-600">{activeView}</span> database. Session secure.
