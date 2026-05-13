@@ -1,16 +1,15 @@
 'use client';
+
 import { motion } from 'framer-motion';
-import { Download, User, FileText, Globe, Clock } from 'lucide-react';
+import { User, FileText, Globe, Clock } from 'lucide-react';
 import { BentoCard } from './BentoCard';
+import { DownloadLog } from '@/types/dashboard';
 
-const downloadLogs = [
-  { id: 1, user: 'Sarah Smith', file: 'SPC_System_Core_v2.bin', timestamp: '2026-05-12 14:20:01', ip: '192.168.1.45', status: 'verified' },
-  { id: 2, user: 'Mike Ross', file: 'Database_Backup_May.sql', timestamp: '2026-05-12 12:05:44', ip: '102.44.12.190', status: 'verified' },
-  { id: 3, user: 'John Doe', file: 'UI_Brand_Guidelines.pdf', timestamp: '2026-05-11 09:15:30', ip: '172.16.254.1', status: 'verified' },
-  { id: 4, user: 'Sarah Smith', file: 'UI_Brand_Guidelines.pdf', timestamp: '2026-05-11 08:30:12', ip: '192.168.1.45', status: 'verified' },
-];
+interface DownloadHistoryProps {
+  logs: DownloadLog[];
+}
 
-export function DownloadHistory() {
+export function DownloadHistory({ logs }: DownloadHistoryProps) {
   return (
     <BentoCard title="Download Documentation" className="md:col-span-6">
       <div className="overflow-x-auto">
@@ -24,7 +23,7 @@ export function DownloadHistory() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50">
-            {downloadLogs.map((log, idx) => (
+            {logs.map((log, idx) => (
               <motion.tr 
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}

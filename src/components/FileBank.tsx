@@ -1,27 +1,15 @@
 'use client';
-import { useSPCTheme } from '@/providers/ThemeProvider';
-import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FileItem } from '@/types/dashboard';
 
-interface FileItem {
-  id: string;
-  name: string;
-  size: string;
-  type: string;
-  updatedAt: string;
+interface FileBankProps {
+  role: 'admin' | 'user';
+  files: FileItem[];         // This is the already filtered list
+  searchQuery: string;       // Passed from useSearch
+  setSearchQuery: (val: string) => void; // Passed from useSearch
 }
 
-export function FileBank({ role, files }: { role: 'admin' | 'user', files: FileItem[] }) {
-  const { colors } = useSPCTheme();
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const filteredFiles = useMemo(() => {
-    return files.filter((file) =>
-      file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      file.type.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [searchQuery, files]);
-
+export function FileBank({ role, files, searchQuery, setSearchQuery }: FileBankProps) {
   return (
     <div className="space-y-6">
       {/* Search Header */}
@@ -74,8 +62,8 @@ export function FileBank({ role, files }: { role: 'admin' | 'user', files: FileI
           </thead>
           <tbody>
             <AnimatePresence mode='popLayout'>
-              {filteredFiles.length > 0 ? (
-                filteredFiles.map((file, idx) => (
+              {files.length > 0 ? (
+                files.map((file, idx) => (
                   <motion.tr 
                     layout
                     key={file.id}
@@ -138,11 +126,7 @@ export function FileBank({ role, files }: { role: 'admin' | 'user', files: FileI
                   </motion.tr>
                 ))
               ) : (
-                <motion.tr 
-                  initial={{ opacity: 0 }} 
-                  animate={{ opacity: 1 }} 
-                  key="empty"
-                >
+                <motion.tr initial={{ opacity: 0 }} animate={{ opacity: 1 }} key="empty">
                   <td colSpan={4} className="py-20 text-center">
                     <p className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-300">
                       No files matching "{searchQuery}"

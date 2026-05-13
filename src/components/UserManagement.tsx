@@ -1,33 +1,30 @@
 'use client';
-import { useState } from 'react';
-import { UserCircle, ShieldCheck, UserMinus, Edit3, Check, X, Lock, User } from 'lucide-react';
+import { UserCircle, ShieldCheck, UserMinus, Edit3, Check, X, User } from 'lucide-react';
 import { useSPCTheme } from '@/providers/ThemeProvider';
 import { BentoCard } from './BentoCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserManagementData } from '@/types/dashboard';
 
-export function UserManagement() {
+interface UserManagementProps {
+  users: UserManagementData[];
+  isEditing: boolean;
+  selectedUser: UserManagementData | null;
+  onApprove: (id: string) => void;
+  onToggleStatus: (id: string) => void;
+  onEdit: (user: UserManagementData) => void;
+  onCloseEdit: () => void;
+}
+
+export function UserManagement({ 
+  users, 
+  isEditing, 
+  selectedUser, 
+  onApprove, 
+  onToggleStatus, 
+  onEdit, 
+  onCloseEdit 
+}: UserManagementProps) {
   const { colors } = useSPCTheme();
-  const [isEditing, setIsEditing] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<UserManagementData | null>(null);
-  const [users, setUsers] = useState<UserManagementData[]>([
-    { id: '1', name: 'John Doe', email: 'john@spc.com', role: 'admin', status: 'active' },
-    { id: '2', name: 'Sarah Smith', email: 'sarah@spc.com', role: 'user', status: 'pending' },
-    { id: '3', name: 'Mike Ross', email: 'mike@spc.com', role: 'user', status: 'disabled' },
-  ]);
-
-  const toggleStatus = (id: string) => {
-    setUsers(users.map(u => u.id === id ? { ...u, status: u.status === 'active' ? 'disabled' : 'active' } : u));
-  };
-
-  const approveUser = (id: string) => {
-    setUsers(users.map(u => u.id === id ? { ...u, status: 'active' } : u));
-  };
-
-  const openEdit = (user: UserManagementData) => {
-    setSelectedUser(user);
-    setIsEditing(true);
-  };
 
   return (
     <div className="md:col-span-6 relative">
@@ -47,12 +44,19 @@ export function UserManagement() {
                 <motion.tr key={u.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: idx * 0.05 }} className="group">
                   <td className="py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-emerald-500 transition-colors"><UserCircle /></div>
-                      <div><p className="text-sm font-bold text-slate-900">{u.name}</p><p className="text-xs text-slate-400">{u.email}</p></div>
+                      <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-emerald-500 transition-colors">
+                        <UserCircle />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">{u.name}</p>
+                        <p className="text-xs text-slate-400">{u.email}</p>
+                      </div>
                     </div>
                   </td>
                   <td className="py-4">
-                    <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase ${u.role === 'admin' ? 'bg-purple-50 text-purple-600' : 'bg-blue-50 text-blue-600'}`}>{u.role}</span>
+                    <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase ${u.role === 'admin' ? 'bg-purple-50 text-purple-600' : 'bg-blue-50 text-blue-600'}`}>
+                      {u.role}
+                    </span>
                   </td>
                   <td className="py-4">
                     <div className="flex items-center gap-2">
@@ -62,9 +66,18 @@ export function UserManagement() {
                   </td>
                   <td className="py-4 text-right">
                     <div className="flex justify-end gap-2">
-                      {u.status === 'pending' && <button onClick={() => approveUser(u.id)} className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"><ShieldCheck className="w-4 h-4" /></button>}
-                      <button onClick={() => openEdit(u)} className="p-2 hover:bg-slate-50 text-slate-400 rounded-lg transition-all"><Edit3 className="w-4 h-4" /></button>
-                      <button onClick={() => toggleStatus(u.id)} className={`p-2 rounded-lg transition-all ${u.status === 'disabled' ? 'hover:bg-emerald-50 text-emerald-600' : 'hover:bg-red-50 text-red-400'}`}>
+                      {u.status === 'pending' && (
+                        <button onClick={() => onApprove(u.id)} className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all">
+                          <ShieldCheck className="w-4 h-4" />
+                        </button>
+                      )}
+                      <button onClick={() => onEdit(u)} className="p-2 hover:bg-slate-50 text-slate-400 rounded-lg transition-all">
+                        <Edit3 className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => onToggleStatus(u.id)} 
+                        className={`p-2 rounded-lg transition-all ${u.status === 'disabled' ? 'hover:bg-emerald-50 text-emerald-600' : 'hover:bg-red-50 text-red-400'}`}
+                      >
                         {u.status === 'disabled' ? <Check className="w-4 h-4" /> : <UserMinus className="w-4 h-4" />}
                       </button>
                     </div>
@@ -79,15 +92,23 @@ export function UserManagement() {
       <AnimatePresence>
         {isEditing && (
           <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsEditing(false)} className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[110]" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onCloseEdit} className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[110]" />
             <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-[120] p-8 border-l">
               <div className="flex justify-between mb-10">
-                <div><h3 className="text-xl font-black">Edit Identity</h3><p className="text-[10px] text-emerald-600/40 font-bold uppercase">Protocol: Update_User_V2</p></div>
-                <button onClick={() => setIsEditing(false)}><X className="w-5 h-5 text-slate-400" /></button>
+                <div>
+                  <h3 className="text-xl font-black">Edit Identity</h3>
+                  <p className="text-[10px] text-emerald-600/40 font-bold uppercase">Protocol: Update_User_V2</p>
+                </div>
+                <button onClick={onCloseEdit}><X className="w-5 h-5 text-slate-400" /></button>
               </div>
               <div className="space-y-6">
-                <div className="relative"><User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" /><input type="text" defaultValue={selectedUser?.name} className="w-full pl-11 pr-4 py-3 bg-slate-50 rounded-2xl" /></div>
-                <button onClick={() => setIsEditing(false)} style={{ backgroundColor: colors.primary }} className="w-full py-4 text-white rounded-2xl font-bold shadow-lg active:scale-95">Commit Changes</button>
+                <div className="relative">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
+                  <input type="text" defaultValue={selectedUser?.name} className="w-full pl-11 pr-4 py-3 bg-slate-50 rounded-2xl" />
+                </div>
+                <button onClick={onCloseEdit} style={{ backgroundColor: colors.primary }} className="w-full py-4 text-white rounded-2xl font-bold shadow-lg active:scale-95">
+                  Commit Changes
+                </button>
               </div>
             </motion.div>
           </>

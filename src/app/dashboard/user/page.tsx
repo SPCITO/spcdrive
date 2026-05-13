@@ -1,34 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useMockAuth } from '@/hooks/useMockAuth';
+import { useUserDashboard } from '@/hooks/useUserDashboard';
+import { useSearch } from '@/hooks/useSearch';
 import { BentoCard } from '@/components/BentoCard';
 import { DashboardShell } from '@/components/DashboardShell';
 import { useSPCTheme } from '@/providers/ThemeProvider';
 import { FileBank } from '@/components/FileBank';
-import { FileItem } from '@/types/dashboard'; // Strict typing
 import { Loader2, ShieldCheck } from 'lucide-react';
 
 export default function UserDashboard() {
-  const { user, logout, loading } = useMockAuth();
+  const { user, logout, loading, files } = useUserDashboard();
   const { colors } = useSPCTheme();
-  const router = useRouter();
 
-  // Strictly typed file state
-  const [files] = useState<FileItem[]>([
-    { id: '1', name: 'SPC_System_Core_v2.bin', size: '1.2 GB', type: 'EXE', updatedAt: '2026-05-12' },
-    { id: '2', name: 'Database_Backup_May.sql', size: '450 MB', type: 'SQL', updatedAt: '2026-05-10' },
-    { id: '3', name: 'UI_Brand_Guidelines.pdf', size: '12 MB', type: 'PDF', updatedAt: '2026-05-08' },
-    { id: '4', name: 'Network_Topology_Map.svg', size: '2.4 MB', type: 'SVG', updatedAt: '2026-05-09' },
-  ]);
+  // Use the search hook for file filtering
+  const { query: searchQuery, setQuery: setSearchQuery, filteredData: filteredFiles } = useSearch(files, ['name', 'type']);
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/dashboard/auth');
-    }
-  }, [user, loading, router]);
-
+  // Loading State (Thematic)
   if (!user || loading) {
     return (
       <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: colors.background }}>
@@ -43,13 +30,13 @@ export default function UserDashboard() {
   return (
     <DashboardShell 
       title="User Drive"
-      role="Standard Operative" // More thematic role name
+      role="Standard Operative"
       userName={user.name}
       onLogout={logout}
     >
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         
-        {/* Profile Card */}
+        {/* Profile Identity Card */}
         <BentoCard className="md:col-span-4">
           <div className="flex items-center gap-5 p-2">
             <div 
@@ -75,10 +62,15 @@ export default function UserDashboard() {
 
         {/* Central File Bank */}
         <BentoCard title="Available Protocols & Assets" className="md:col-span-4">
-          <FileBank role="user" files={files} />
+          <FileBank 
+            role="user" 
+            files={filteredFiles} 
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
         </BentoCard>
 
-        {/* Node Storage Info */}
+        {/* System Quota Monitoring */}
         <BentoCard title="System Quota" className="md:col-span-2">
           <div className="mt-2 space-y-3">
             <div className="flex justify-between items-end">
@@ -89,10 +81,7 @@ export default function UserDashboard() {
             <div className="relative h-2.5 w-full bg-emerald-500/5 rounded-full overflow-hidden">
               <div 
                 className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out" 
-                style={{ 
-                  width: '66%', 
-                  backgroundColor: colors.primary,
-                }} 
+                style={{ width: '66%', backgroundColor: colors.primary }} 
               />
             </div>
             <p className="text-[9px] font-black uppercase tracking-tighter opacity-30">
@@ -101,7 +90,7 @@ export default function UserDashboard() {
           </div>
         </BentoCard>
 
-        {/* Permission Status */}
+        {/* Security Status Component */}
         <BentoCard className="md:col-span-2 flex items-center gap-4 transition-all hover:shadow-xl hover:shadow-emerald-500/5 border border-transparent hover:border-emerald-500/10">
           <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
             <ShieldCheck className="w-6 h-6" />
