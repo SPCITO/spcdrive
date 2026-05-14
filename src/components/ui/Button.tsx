@@ -6,22 +6,21 @@ import { Loader2 } from "lucide-react"
 import { useSPCTheme } from "@/providers/ThemeProvider"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap font-bold transition-all duration-200 active:scale-95 disabled:pointer-events-none disabled:opacity-50 select-none border",
+  "inline-flex items-center justify-center whitespace-nowrap font-black uppercase tracking-widest transition-all duration-200 active:scale-95 disabled:pointer-events-none disabled:opacity-50 select-none border",
   {
     variants: {
       variant: {
-        // We use classes for the layout logic, but let CSS variables handle the colors
-        primary: "text-white shadow-lg border-transparent hover:brightness-110 hover:shadow-emerald-500/20",
-        secondary: "bg-[var(--card)] text-[var(--text-main)] border-[var(--border)] hover:bg-[var(--background)]",
-        ghost: "border-transparent text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--background)]",
-        danger: "bg-[var(--danger)]/10 text-[var(--danger)] border-[var(--danger)]/20 hover:bg-[var(--danger)] hover:text-white",
+        primary: "bg-[var(--spc-primary)] text-[var(--spc-button-text)] shadow-lg border-transparent hover:brightness-110 shadow-emerald-500/10",
+        secondary: "bg-[var(--spc-card)] text-[var(--spc-text-main)] border-[var(--spc-border)] hover:bg-[var(--spc-background)]",
+        ghost: "border-transparent text-[var(--spc-text-muted)] hover:text-[var(--spc-text-main)] hover:bg-[var(--spc-background)]",
+        danger: "bg-[var(--spc-danger)] text-white border-transparent hover:brightness-110 shadow-lg shadow-red-500/10",
         outline: "bg-transparent border-2",
       },
       size: {
-        default: "h-11 px-6 rounded-[var(--radius-base)] text-sm",
-        sm: "h-9 px-4 text-xs rounded-xl",
-        lg: "h-14 px-8 text-base rounded-[var(--radius-base)]",
-        icon: "h-11 w-11 rounded-[var(--radius-base)]",
+        default: "h-12 px-6 rounded-[var(--spc-radius-base)] text-[11px]",
+        sm: "h-9 px-4 text-[10px] rounded-xl",
+        lg: "h-14 px-8 text-sm rounded-[var(--spc-radius-base)]",
+        icon: "h-11 w-11 rounded-[var(--spc-radius-base)]",
       },
     },
     defaultVariants: {
@@ -41,23 +40,51 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, isLoading, leftIcon, rightIcon, children, ...props }, ref) => {
-    const { colors } = useSPCTheme();
+    const { colors, radius } = useSPCTheme();
 
-    // Mapping dynamic styles that CVA can't handle easily
+    // 1. Determine the active variant (falling back to 'primary' if undefined)
+    const activeVariant = variant || "primary";
+
+    // 2. The Force-Fix: Direct style injection using the theme context values
     const getVariantStyles = () => {
-      switch (variant) {
+      const baseStyles = { borderRadius: radius.base };
+
+      switch (activeVariant) {
         case 'primary':
-          return { backgroundColor: colors.primary };
+          return { 
+            ...baseStyles,
+            backgroundColor: colors.primary, 
+            color: colors.buttonText,
+            borderColor: 'transparent'
+          };
         case 'outline':
-          return { borderColor: colors.primary, color: colors.primary };
+          return { 
+            ...baseStyles,
+            borderColor: colors.primary, 
+            color: colors.primary,
+          };
+        case 'danger':
+          return { 
+            ...baseStyles,
+            backgroundColor: colors.danger, 
+            color: '#ffffff',
+            borderColor: 'transparent'
+          };
+        case 'secondary':
+          return {
+            ...baseStyles,
+            backgroundColor: colors.card,
+            borderColor: colors.border,
+            color: colors.textMain,
+          };
         default:
-          return {};
+          return baseStyles;
       }
     };
 
     return (
       <button
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant: activeVariant, size, className }))}
         style={getVariantStyles()}
         ref={ref}
         disabled={isLoading || props.disabled}
@@ -67,9 +94,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
           <>
-            {leftIcon && <span className="mr-2 inline-flex items-center">{leftIcon}</span>}
-            {children}
-            {rightIcon && <span className="ml-2 inline-flex items-center">{rightIcon}</span>}
+            {leftIcon && <span className="mr-2 inline-flex items-center opacity-80">{leftIcon}</span>}
+            <span className="truncate">{children}</span>
+            {rightIcon && <span className="ml-2 inline-flex items-center opacity-80">{rightIcon}</span>}
           </>
         )}
       </button>

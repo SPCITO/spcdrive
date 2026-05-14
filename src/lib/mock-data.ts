@@ -18,7 +18,7 @@ export const MOCK_LOGS: DownloadLog[] = [
 
 export const MOCK_USERS: MockUser[] = [
   { id: '1', name: 'Jason (Admin)', email: 'jason@test', role: 'admin', status: 'active', password: '123' },
-  { id: '2', name: 'Sarah Miller', email: 's.miller@spc.drive', role: 'user', status: 'active', password: '123' },
+  { id: '2', name: 'Sarah Miller', email: 'user@test', role: 'user', status: 'active', password: '123' },
   { id: '3', name: 'Marcus Chen', email: 'm.chen@spc.drive', role: 'user', status: 'active', password: '123' },
   { id: '4', name: 'Elena Rodriguez', email: 'e.rodriguez@spc.drive', role: 'user', status: 'pending', password: '123' },
   { id: '5', name: 'David Park', email: 'd.park@spc.drive', role: 'user', status: 'active', password: '123' },

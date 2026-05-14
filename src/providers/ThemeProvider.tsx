@@ -1,27 +1,22 @@
 'use client';
 import React, { createContext, useContext, ReactNode } from 'react';
 
-/**
- * MASTER THEME CONFIGURATION
- * Now with a deeper background for better contrast with white cards.
- */
 export const SPC_THEME = {
   colors: {
-    // Brand Greens
     primary: '#10b981',       
     primaryDark: '#059669',   
     primaryLight: '#ecfdf5',  
+    buttonText: '#ffffff',     
     
-    // System Colors
+    secondary: '#f8fafc',      
+    secondaryHover: '#f1f5f9', 
+    
     danger: '#ef4444',        
     
-    // Neutrals & UI
     textMain: '#09090b',      
     textMuted: '#71717a',     
-    // Shifted from #f4f4f5 to a more distinct "Interface Gray"
     background: '#ebedef',    
     card: '#ffffff',          
-    // Tightened border color to maintain crispness against the new gray
     border: '#dcdfe4',        
   },
   radius: {
@@ -38,20 +33,20 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       <div 
         className="theme-wrapper transition-colors duration-300"
         style={{ 
-          // 1. CSS Variables
-          ['--primary' as string]: SPC_THEME.colors.primary,
-          ['--primary-dark' as string]: SPC_THEME.colors.primaryDark,
-          ['--primary-light' as string]: SPC_THEME.colors.primaryLight,
-          ['--danger' as string]: SPC_THEME.colors.danger,
-          ['--text-main' as string]: SPC_THEME.colors.textMain,
-          ['--text-muted' as string]: SPC_THEME.colors.textMuted,
-          ['--background' as string]: SPC_THEME.colors.background,
-          ['--card' as string]: SPC_THEME.colors.card,
-          ['--border' as string]: SPC_THEME.colors.border,
-          ['--radius-base' as string]: SPC_THEME.radius.base,
-          ['--radius-large' as string]: SPC_THEME.radius.large,
+          // Use 'spc' prefix to avoid collision with Tailwind/Global CSS vars
+          ['--spc-primary' as string]: SPC_THEME.colors.primary,
+          ['--spc-primary-dark' as string]: SPC_THEME.colors.primaryDark,
+          ['--spc-button-text' as string]: SPC_THEME.colors.buttonText,
+          ['--spc-danger' as string]: SPC_THEME.colors.danger,
+          ['--spc-text-main' as string]: SPC_THEME.colors.textMain,
+          ['--spc-text-muted' as string]: SPC_THEME.colors.textMuted,
+          ['--spc-background' as string]: SPC_THEME.colors.background,
+          ['--spc-card' as string]: SPC_THEME.colors.card,
+          ['--spc-border' as string]: SPC_THEME.colors.border,
+          ['--spc-radius-base' as string]: SPC_THEME.radius.base,
+          ['--spc-radius-large' as string]: SPC_THEME.radius.large,
 
-          // 2. Base Styles
+          // Hard overrides to kill the "White" from globals.css
           backgroundColor: SPC_THEME.colors.background,
           color: SPC_THEME.colors.textMain,
           minHeight: '100vh',

@@ -65,7 +65,7 @@ export function AuthForm({
             Identity
           </label>
           <div className="relative">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 opacity-40" style={{ color: colors.card }} />
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: colors.primary }} />
             <input 
               type="email" 
               value={email} 
@@ -89,7 +89,7 @@ export function AuthForm({
             Security Key
           </label>
           <div className="relative">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 opacity-40" style={{ color: colors.card }} />
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: colors.primary }} />
             <input 
               type="password" 
               value={password} 
@@ -121,9 +121,9 @@ export function AuthForm({
           onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
         >
           {loading ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
+            <Loader2 className="h-5 w-5 animate-spin" style={{ color: colors.card }} />
           ) : (
-            <>{submitLabel} <ArrowRight className="h-4 w-4" /></>
+            <>{submitLabel} <ArrowRight className="h-4 w-4" style={{ color: colors.card }} /></>
           )}
         </button>
       </div>

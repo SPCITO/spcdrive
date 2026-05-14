@@ -1,35 +1,37 @@
 @import "tailwindcss";
 
+/* REMOVED: Hardcoded #ffffff and #0a0a0a. 
+  We leave the variables empty or remove them so the 
+  ThemeProvider can inject the correct values.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Let Geist fonts load if you are using them */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 @theme inline {
+  /* Map Tailwind colors to your ThemeProvider variables */
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-foreground: var(--text-main);
+  --color-primary: var(--primary);
+  --color-border: var(--border);
 
-  /* --- ADD THESE LINES --- */
   --animate-float: float 6s ease-in-out infinite;
 
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-20px); }
   }
-  /* ----------------------- */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Cleaned up Body: 
+  It now pulls directly from the variables your 
+  ThemeProvider wrapper provides.
+*/
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
