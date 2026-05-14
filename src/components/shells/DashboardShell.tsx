@@ -1,7 +1,8 @@
 'use client';
 
 import { useSPCTheme } from '@/providers/ThemeProvider';
-import { ReactNode } from 'react';
+import { Modal } from '@/components/ui/Modal';
+import { ReactNode, useState } from 'react';
 import Image from 'next/image';
 
 interface DashboardShellProps {
@@ -20,6 +21,7 @@ export function DashboardShell({
   onLogout,
 }: DashboardShellProps) {
   const { colors, radius } = useSPCTheme();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   return (
     <div 
@@ -75,7 +77,7 @@ export function DashboardShell({
 
           {/* DANGER ACTION: Sign Out */}
           <button
-            onClick={onLogout}
+            onClick={() => setIsLogoutModalOpen(true)}
             className="px-6 py-3 text-[10px] font-black uppercase tracking-widest border transition-all active:scale-95 shadow-sm"
             style={{ 
               color: colors.danger,
@@ -94,7 +96,7 @@ export function DashboardShell({
               e.currentTarget.style.transform = 'translateY(0px)';
             }}
           >
-            Terminal Sign Out
+            Sign out
           </button>
         </header>
 
@@ -102,6 +104,72 @@ export function DashboardShell({
         <main className="animate-in fade-in slide-in-from-bottom-4 duration-1000">
           {children}
         </main>
+
+        {/* Logout Confirmation Modal */}
+        <Modal 
+          isOpen={isLogoutModalOpen} 
+          onClose={() => setIsLogoutModalOpen(false)}
+          title="Terminate Session?"
+          subtitle="CONFIRM_LOGOUT_ACTION"
+        >
+          <div className="p-6 space-y-4">
+            <p 
+              className="text-sm font-medium"
+              style={{ color: colors.textMain }}
+            >
+              Are you sure you want to sign out? Your session will be terminated and you'll need to re-authenticate to access the system.
+            </p>
+            
+            <div className="flex gap-3 pt-4">
+              <button
+                onClick={() => setIsLogoutModalOpen(false)}
+                className="flex-1 px-4 py-3 text-[10px] font-black uppercase tracking-widest border rounded transition-all"
+                style={{
+                  color: colors.textMain,
+                  borderColor: colors.border,
+                  backgroundColor: colors.background,
+                  borderRadius: radius.base
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = `${colors.primary}08`;
+                  e.currentTarget.style.borderColor = colors.primary;
+                  e.currentTarget.style.color = colors.primary;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = colors.background;
+                  e.currentTarget.style.borderColor = colors.border;
+                  e.currentTarget.style.color = colors.textMain;
+                }}
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsLogoutModalOpen(false);
+                  onLogout();
+                }}
+                className="flex-1 px-4 py-3 text-[10px] font-black uppercase tracking-widest border rounded transition-all"
+                style={{
+                  color: colors.card,
+                  backgroundColor: colors.danger,
+                  borderColor: colors.danger,
+                  borderRadius: radius.base
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = '0.9';
+                  e.currentTarget.style.transform = 'scale(1.02)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = '1';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </Modal>
 
       </div>
     </div>

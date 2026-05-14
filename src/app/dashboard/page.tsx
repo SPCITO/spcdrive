@@ -77,16 +77,16 @@ export default function AdminDashboard() {
         {/* Profile & Primary Action */}
         <BentoCard className="md:col-span-4">
           <div className="flex flex-col md:flex-row justify-between md:items-center gap-6">
-            <div className="space-y-1">
-              <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: colors.primary }}>
-                Active Session
-              </p>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: colors.primary }} />
+                <p className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: colors.primary }}>
+                  Active Session
+                </p>
+              </div>
               <h2 className="text-3xl font-black tracking-tight" style={{ color: colors.textMain }}>
                 {user.name}
               </h2>
-              <p className="text-xs font-medium italic opacity-40" style={{ color: colors.primary }}>
-                "Node {dash.activeView.toUpperCase()} Protocol Active"
-              </p>
             </div>
             
             <Button 

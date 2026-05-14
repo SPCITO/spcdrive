@@ -34,7 +34,7 @@ export function UserManagement({
               color: colors.textMuted 
             }}
           >
-            <UserCircle className="w-6 h-6 group-hover:text-(--primary) transition-colors" style={{ color: 'inherit' }} />
+            <UserCircle className="w-6 h-6 group-hover:text--primary transition-colors" style={{ color: 'inherit' }} />
           </div>
           <div>
             <p className="text-sm font-bold" style={{ color: colors.textMain }}>{u.name}</p>

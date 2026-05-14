@@ -79,31 +79,6 @@ export default function UserDashboard() {
           />
         </BentoCard>
 
-        {/* System Quota Monitoring */}
-        <BentoCard title="System Quota" className="md:col-span-2">
-          <div className="mt-2 space-y-3">
-            <div className="flex justify-between items-end">
-              <span className="text-[10px] font-black uppercase tracking-widest opacity-40" style={{ color: colors.primary }}>
-                Storage Efficiency
-              </span>
-              <span className="text-xs font-black tracking-tighter" style={{ color: colors.textMain }}>
-                66% Utilized
-              </span>
-            </div>
-            
-            {/* Progress Bar Track */}
-            <div className="relative h-2.5 w-full rounded-full overflow-hidden" style={{ backgroundColor: `${colors.primary}10` }}>
-              <div 
-                className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out" 
-                style={{ width: '66%', backgroundColor: colors.primary }} 
-              />
-            </div>
-            <p className="text-[9px] font-black uppercase tracking-tighter opacity-30" style={{ color: colors.textMain }}>
-              8.4 GB of 12.0 GB remaining
-            </p>
-          </div>
-        </BentoCard>
-
         {/* Security Status Component */}
         <BentoCard 
           className="md:col-span-2 flex items-center gap-4 transition-all hover:shadow-xl border border-transparent"
