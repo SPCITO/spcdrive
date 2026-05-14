@@ -13,7 +13,7 @@ interface UploadModalProps {
 }
 
 export function UploadModal({ isOpen, isProcessing, onClose, onUpload }: UploadModalProps) {
-  const { colors } = useSPCTheme();
+  const { colors, radius } = useSPCTheme();
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -38,31 +38,72 @@ export function UploadModal({ isOpen, isProcessing, onClose, onUpload }: UploadM
             setIsDragging={setIsDragging} 
           />
         ) : (
-          <div className="bg-slate-50 rounded-3xl p-6 flex items-center gap-4 border border-emerald-100/50 animate-in fade-in zoom-in-95">
-            <div className="w-12 h-12 rounded-xl bg-emerald-500 flex items-center justify-center text-white">
+          /* File Preview Card */
+          <div 
+            className="p-6 flex items-center gap-4 border animate-in fade-in zoom-in-95"
+            style={{ 
+              backgroundColor: `${colors.background}80`,
+              borderColor: `${colors.primary}20`,
+              borderRadius: radius.base 
+            }}
+          >
+            <div 
+              className="w-12 h-12 flex items-center justify-center text-white shadow-md"
+              style={{ 
+                backgroundColor: colors.primary,
+                borderRadius: '0.75rem' 
+              }}
+            >
               <FileIcon className="w-6 h-6" />
             </div>
-            <div className="grow">
-              <p className="text-sm font-bold truncate">{selectedFile.name}</p>
-              <p className="text-[10px] text-slate-400 font-mono tracking-tighter">READY FOR INJECTION</p>
+            
+            <div className="grow overflow-hidden">
+              <p className="text-sm font-bold truncate" style={{ color: colors.textMain }}>
+                {selectedFile.name}
+              </p>
+              <p 
+                className="text-[10px] font-mono tracking-tighter uppercase opacity-60"
+                style={{ color: colors.primary }}
+              >
+                READY FOR INJECTION
+              </p>
             </div>
+
             <button 
-              disabled={isProcessing} onClick={() => setSelectedFile(null)} 
-              className="text-xs font-bold text-red-400 hover:text-red-600 disabled:opacity-50"
+              disabled={isProcessing} 
+              onClick={() => setSelectedFile(null)} 
+              className="text-xs font-black uppercase tracking-tighter transition-colors disabled:opacity-50"
+              style={{ color: colors.danger }}
+              onMouseEnter={(e) => e.currentTarget.style.color = colors.textMain}
+              onMouseLeave={(e) => e.currentTarget.style.color = colors.danger}
             >
               Remove
             </button>
           </div>
         )}
 
+        {/* Action Button */}
         <button 
-          disabled={!selectedFile || isProcessing} onClick={handleAction} 
-          style={{ backgroundColor: selectedFile ? colors.primary : '#f1f5f9' }} 
-          className={`w-full mt-8 py-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 transition-all ${
-            selectedFile ? 'text-white shadow-lg active:scale-95 hover:brightness-110' : 'text-slate-400'
-          } disabled:opacity-70 disabled:cursor-not-allowed`}
+          disabled={!selectedFile || isProcessing} 
+          onClick={handleAction} 
+          className={`w-full mt-8 py-4 text-sm font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed`}
+          style={{ 
+            backgroundColor: selectedFile ? colors.primary : colors.border,
+            color: selectedFile ? '#ffffff' : colors.textMuted,
+            borderRadius: radius.base 
+          }}
+          onMouseEnter={(e) => {
+            if (selectedFile && !isProcessing) e.currentTarget.style.filter = 'brightness(1.1)';
+          }}
+          onMouseLeave={(e) => {
+            if (selectedFile) e.currentTarget.style.filter = 'none';
+          }}
         >
-          {isProcessing ? <Loader2 className="animate-spin w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
+          {isProcessing ? (
+            <Loader2 className="animate-spin w-4 h-4" />
+          ) : (
+            <CheckCircle2 className="w-4 h-4" />
+          )}
           {isProcessing ? 'Processing...' : 'Initialize Upload'}
         </button>
       </div>

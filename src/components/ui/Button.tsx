@@ -1,33 +1,27 @@
+'use client';
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 import { Loader2 } from "lucide-react"
+import { useSPCTheme } from "@/providers/ThemeProvider"
 
-/**
- * BUTTON COMPONENT SYSTEM
- * -----------------------
- * primary:   Main actions (Upload, Get Started).
- * secondary: Neutral actions (View Features, Cancel).
- * ghost:     Subtle actions (Sidebar links, icon-only buttons).
- * danger:    Destructive actions (Delete, Remove User).
- * outline:   Secondary brand actions (Bordered emerald style).
- */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-2xl text-sm font-bold transition-all duration-200 active:scale-95 disabled:pointer-events-none disabled:opacity-50 select-none",
+  "inline-flex items-center justify-center whitespace-nowrap font-bold transition-all duration-200 active:scale-95 disabled:pointer-events-none disabled:opacity-50 select-none border",
   {
     variants: {
       variant: {
-        primary: "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 hover:brightness-110",
-        secondary: "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 shadow-sm",
-        ghost: "text-slate-500 hover:text-slate-900 hover:bg-slate-100",
-        danger: "bg-red-50 text-red-600 hover:bg-red-100 border border-red-100",
-        outline: "border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-50",
+        // We use classes for the layout logic, but let CSS variables handle the colors
+        primary: "text-white shadow-lg border-transparent hover:brightness-110 hover:shadow-emerald-500/20",
+        secondary: "bg-[var(--card)] text-[var(--text-main)] border-[var(--border)] hover:bg-[var(--background)]",
+        ghost: "border-transparent text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--background)]",
+        danger: "bg-[var(--danger)]/10 text-[var(--danger)] border-[var(--danger)]/20 hover:bg-[var(--danger)] hover:text-white",
+        outline: "bg-transparent border-2",
       },
       size: {
-        default: "h-11 px-6",
+        default: "h-11 px-6 rounded-[var(--radius-base)] text-sm",
         sm: "h-9 px-4 text-xs rounded-xl",
-        lg: "h-14 px-8 text-base",
-        icon: "h-11 w-11",
+        lg: "h-14 px-8 text-base rounded-[var(--radius-base)]",
+        icon: "h-11 w-11 rounded-[var(--radius-base)]",
       },
     },
     defaultVariants: {
@@ -40,16 +34,31 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  isLoading?: boolean; // Shows a spinner and disables the button
-  leftIcon?: React.ReactNode; // Icon before the text
-  rightIcon?: React.ReactNode; // Icon after the text
+  isLoading?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, isLoading, leftIcon, rightIcon, children, ...props }, ref) => {
+    const { colors } = useSPCTheme();
+
+    // Mapping dynamic styles that CVA can't handle easily
+    const getVariantStyles = () => {
+      switch (variant) {
+        case 'primary':
+          return { backgroundColor: colors.primary };
+        case 'outline':
+          return { borderColor: colors.primary, color: colors.primary };
+        default:
+          return {};
+      }
+    };
+
     return (
       <button
         className={cn(buttonVariants({ variant, size, className }))}
+        style={getVariantStyles()}
         ref={ref}
         disabled={isLoading || props.disabled}
         {...props}

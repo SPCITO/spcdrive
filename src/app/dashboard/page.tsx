@@ -6,6 +6,7 @@ import { useMockAuth } from '@/hooks/useMockAuth';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
 import { useSearch } from '@/hooks/useSearch';
 import { useUserManagement } from '@/hooks/useUserManagement';
+import { useSPCTheme } from '@/providers/ThemeProvider'; // Linked to Provider
 
 // UI Components
 import { Button } from '@/components/ui/Button';
@@ -26,14 +27,13 @@ import {
 
 export default function AdminDashboard() {
   const { user, logout, loading } = useMockAuth();
+  const { colors } = useSPCTheme(); // Accessing Master Colors
   const router = useRouter();
   
   const dash = useAdminDashboard();
   const userManager = useUserManagement();
-  
   const [isProcessingUpload, setIsProcessingUpload] = useState(false);
 
-  // Search Logic
   const { query: searchQuery, setQuery: setSearchQuery, filteredData: filteredFiles } = useSearch(dash.files, ['name', 'type']);
   const userSearch = useSearch(userManager.users, ['name', 'email']);
 
@@ -46,8 +46,8 @@ export default function AdminDashboard() {
 
   if (!user || loading || user.role !== 'admin') {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-slate-50">
-        <Loader2 className="w-10 h-10 animate-spin text-emerald-500" />
+      <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: colors.background }}>
+        <Loader2 className="w-10 h-10 animate-spin" style={{ color: colors.primary }} />
       </div>
     );
   }
@@ -78,9 +78,15 @@ export default function AdminDashboard() {
         <BentoCard className="md:col-span-4">
           <div className="flex flex-col md:flex-row justify-between md:items-center gap-6">
             <div className="space-y-1">
-              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Active Session</p>
-              <h2 className="text-3xl font-black tracking-tight text-slate-900">{user.name}</h2>
-              <p className="text-emerald-600/40 text-xs font-medium italic">"Node {dash.activeView.toUpperCase()} Protocol Active"</p>
+              <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: colors.primary }}>
+                Active Session
+              </p>
+              <h2 className="text-3xl font-black tracking-tight" style={{ color: colors.textMain }}>
+                {user.name}
+              </h2>
+              <p className="text-xs font-medium italic opacity-40" style={{ color: colors.primary }}>
+                "Node {dash.activeView.toUpperCase()} Protocol Active"
+              </p>
             </div>
             
             <Button 
@@ -98,35 +104,42 @@ export default function AdminDashboard() {
           {[
             { id: 'users', label: 'Manage Account', sub: 'Directory', icon: UserCircle },
             { id: 'history', label: 'Download Logs', sub: 'Access Documentation', icon: Download }
-          ].map((btn) => (
-            <button 
-              key={btn.id}
-              onClick={() => dash.setView(btn.id as any)}
-              className={cn(
-                "flex items-center justify-between p-5 bg-white border rounded-3xl transition-all",
-                dash.activeView === btn.id 
-                  ? 'border-emerald-500 ring-2 ring-emerald-500/10' 
-                  : 'border-zinc-100 hover:shadow-xl hover:shadow-emerald-500/5'
-              )}
-            >
-              <div className="flex items-center gap-4">
-                <div className={cn(
-                  "p-3 rounded-xl",
-                  dash.activeView === btn.id ? 'bg-emerald-500 text-white' : 'bg-emerald-50 text-emerald-600'
-                )}>
-                  <btn.icon className="w-5 h-5" />
+          ].map((btn) => {
+            const isActive = dash.activeView === btn.id;
+            return (
+              <button 
+                key={btn.id}
+                onClick={() => dash.setView(btn.id as any)}
+                className="flex items-center justify-between p-5 bg-white border transition-all rounded-3xl"
+                style={{ 
+                  borderColor: isActive ? colors.primary : colors.border,
+                  boxShadow: isActive ? `0 0 0 2px ${colors.primary}15` : 'none'
+                }}
+              >
+                <div className="flex items-center gap-4">
+                  <div 
+                    className="p-3 rounded-xl transition-colors"
+                    style={{ 
+                      backgroundColor: isActive ? colors.primary : colors.primaryLight,
+                      color: isActive ? colors.card : colors.primary 
+                    }}
+                  >
+                    <btn.icon className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-sm font-bold" style={{ color: colors.textMain }}>{btn.label}</p>
+                    <p className="text-[10px] font-black uppercase tracking-wider opacity-40" style={{ color: colors.primary }}>
+                      {btn.sub}
+                    </p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <p className="text-sm font-bold text-slate-900">{btn.label}</p>
-                  <p className="text-[10px] text-emerald-600/40 font-black uppercase tracking-wider">{btn.sub}</p>
-                </div>
-              </div>
-              <ArrowRight className={cn(
-                "w-4 h-4",
-                dash.activeView === btn.id ? 'text-emerald-500' : 'text-zinc-300'
-              )} />
-            </button>
-          ))}
+                <ArrowRight 
+                  className="w-4 h-4" 
+                  style={{ color: isActive ? colors.primary : colors.border }} 
+                />
+              </button>
+            );
+          })}
         </div>
 
         {/* Main Content Area */}

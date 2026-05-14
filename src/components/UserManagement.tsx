@@ -19,60 +19,94 @@ interface UserManagementProps {
 export function UserManagement({ 
   users, isEditing, selectedUser, onApprove, onToggleStatus, onEdit, onCloseEdit 
 }: UserManagementProps) {
-  const { colors } = useSPCTheme();
+  const { colors, radius } = useSPCTheme();
 
   const columns = [
     {
       header: 'Identity',
       render: (u: UserManagementData) => (
         <div className="flex items-center gap-3 pl-4">
-          <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-emerald-500 transition-colors">
-            <UserCircle />
+          <div 
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-colors border"
+            style={{ 
+              backgroundColor: colors.background, 
+              borderColor: colors.border,
+              color: colors.textMuted 
+            }}
+          >
+            <UserCircle className="w-6 h-6 group-hover:text-(--primary) transition-colors" style={{ color: 'inherit' }} />
           </div>
           <div>
-            <p className="text-sm font-bold text-slate-900">{u.name}</p>
-            <p className="text-xs text-slate-400">{u.email}</p>
+            <p className="text-sm font-bold" style={{ color: colors.textMain }}>{u.name}</p>
+            <p className="text-[11px] font-medium" style={{ color: colors.textMuted }}>{u.email}</p>
           </div>
         </div>
       )
     },
     {
       header: 'Permissions',
-      render: (u: UserManagementData) => (
-        <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase ${
-          u.role === 'admin' ? 'bg-purple-50 text-purple-600' : 'bg-blue-50 text-blue-600'
-        }`}>
-          {u.role}
-        </span>
-      )
+      render: (u: UserManagementData) => {
+        const isAdmin = u.role === 'admin';
+        return (
+          <span 
+            className="px-2 py-1 rounded text-[9px] font-black uppercase tracking-wider border"
+            style={{ 
+              backgroundColor: isAdmin ? `${colors.primary}10` : colors.background,
+              color: isAdmin ? colors.primary : colors.textMuted,
+              borderColor: isAdmin ? `${colors.primary}20` : colors.border
+            }}
+          >
+            {u.role}
+          </span>
+        );
+      }
     },
     {
       header: 'Status',
-      render: (u: UserManagementData) => (
-        <div className="flex items-center gap-2">
-          <div className={`w-1.5 h-1.5 rounded-full ${
-            u.status === 'active' ? 'bg-emerald-500' : u.status === 'pending' ? 'bg-amber-500' : 'bg-slate-300'
-          }`} />
-          <span className="text-xs capitalize">{u.status}</span>
-        </div>
-      )
+      render: (u: UserManagementData) => {
+        const statusColors = {
+          active: colors.primary,
+          pending: '#f59e0b', // Amber remains for warning/pending
+          disabled: colors.textMuted
+        };
+        return (
+          <div className="flex items-center gap-2">
+            <div 
+              className={`w-1.5 h-1.5 rounded-full ${u.status === 'active' ? 'animate-pulse' : ''}`} 
+              style={{ backgroundColor: statusColors[u.status] || colors.textMuted }} 
+            />
+            <span className="text-[11px] font-bold uppercase tracking-tight" style={{ color: colors.textMain }}>
+              {u.status}
+            </span>
+          </div>
+        );
+      }
     },
     {
       header: 'Protocols',
       align: 'right' as const,
       render: (u: UserManagementData) => (
-        <div className="flex justify-end gap-2 pr-4">
+        <div className="flex justify-end gap-1 pr-4">
           {u.status === 'pending' && (
-            <button onClick={() => onApprove(u.id)} className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all">
+            <button 
+              onClick={() => onApprove(u.id)} 
+              className="p-2 transition-all hover:scale-110"
+              style={{ color: colors.primary }}
+            >
               <ShieldCheck className="w-4 h-4" />
             </button>
           )}
-          <button onClick={() => onEdit(u)} className="p-2 hover:bg-slate-50 text-slate-400 rounded-lg transition-all">
+          <button 
+            onClick={() => onEdit(u)} 
+            className="p-2 transition-all hover:scale-110"
+            style={{ color: colors.textMuted }}
+          >
             <Edit3 className="w-4 h-4" />
           </button>
           <button 
             onClick={() => onToggleStatus(u.id)} 
-            className={`p-2 rounded-lg transition-all ${u.status === 'disabled' ? 'hover:bg-emerald-50 text-emerald-600' : 'hover:bg-red-50 text-red-400'}`}
+            className="p-2 transition-all hover:scale-110"
+            style={{ color: u.status === 'disabled' ? colors.primary : colors.danger }}
           >
             {u.status === 'disabled' ? <Check className="w-4 h-4" /> : <UserMinus className="w-4 h-4" />}
           </button>
@@ -83,7 +117,7 @@ export function UserManagement({
 
   return (
     <div className="md:col-span-6 relative">
-      <BentoCard title="User Directory">
+      <BentoCard title="Operative Directory">
         <Table data={users} columns={columns} />
       </BentoCard>
 
@@ -91,21 +125,36 @@ export function UserManagement({
         isOpen={isEditing} 
         onClose={onCloseEdit} 
         title="Edit Identity" 
-        subtitle="Protocol: Update_User_V2"
+        subtitle="UPDATE_AGENT_CREDENTIALS"
       >
-        <div className="space-y-6">
+        <div className="space-y-6 pt-4">
           <div className="relative">
-            <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
+            <UserIcon 
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" 
+              style={{ color: colors.textMuted }} 
+            />
             <input 
               type="text" 
               defaultValue={selectedUser?.name} 
-              className="w-full pl-11 pr-4 py-4 bg-slate-50 rounded-2xl border border-transparent focus:bg-white focus:border-emerald-500/20 focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all font-medium" 
+              className="w-full pl-11 pr-4 py-4 outline-none transition-all font-bold text-sm border" 
+              style={{ 
+                backgroundColor: colors.background,
+                borderColor: colors.border,
+                borderRadius: radius.base,
+                color: colors.textMain
+              }}
+              onFocus={(e) => e.currentTarget.style.borderColor = colors.primary}
+              onBlur={(e) => e.currentTarget.style.borderColor = colors.border}
             />
           </div>
+          
           <button 
             onClick={onCloseEdit} 
-            style={{ backgroundColor: colors.primary }} 
-            className="w-full py-4 text-white rounded-2xl font-bold shadow-lg active:scale-95 hover:brightness-110 transition-all"
+            className="w-full py-4 text-white font-black uppercase tracking-widest shadow-lg active:scale-95 hover:brightness-110 transition-all"
+            style={{ 
+              backgroundColor: colors.primary,
+              borderRadius: radius.base 
+            }}
           >
             Commit Changes
           </button>

@@ -1,5 +1,6 @@
 'use client';
 import { Mail, Lock, Loader2, ArrowRight } from 'lucide-react';
+import { useSPCTheme } from '@/providers/ThemeProvider';
 
 interface AuthFormProps {
   title: string;
@@ -8,7 +9,6 @@ interface AuthFormProps {
   loading: boolean;
   submitLabel: string;
   onAuth: () => void;
-  // Controlled Inputs
   email: string;
   setEmail: (val: string) => void;
   password: string;
@@ -22,54 +22,117 @@ export function AuthForm({
   onAuth, email, setEmail, password, setPassword, 
   onKeyDown, footerAction 
 }: AuthFormProps) {
+  const { colors, radius } = useSPCTheme();
+
   return (
-    <div className="bg-white/15 backdrop-blur-xl border border-white/20 rounded-[2.5rem] p-10 shadow-2xl transition-all">
+    <div 
+      className="backdrop-blur-xl border p-10 shadow-2xl transition-all"
+      style={{ 
+        backgroundColor: `${colors.card}25`, // 15% opacity card color for glass effect
+        borderColor: `${colors.card}30`,
+        borderRadius: radius.large 
+      }}
+    >
+      {/* Header Section */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-black text-white tracking-tight">{title}</h1>
-        <p className="text-sm text-white/70 mt-2">{subtitle}</p>
+        <h1 className="text-3xl font-black tracking-tight" style={{ color: colors.card }}>
+          {title}
+        </h1>
+        <p className="text-sm mt-2 opacity-70" style={{ color: colors.card }}>
+          {subtitle}
+        </p>
+        
+        {/* Error State linked to colors.danger */}
         {error && (
-          <div className="bg-red-500/20 border border-red-500/50 rounded-xl py-2 px-4 mt-4">
-            <p className="text-red-200 text-xs font-bold">{error}</p>
+          <div 
+            className="border rounded-xl py-2 px-4 mt-4 animate-in shake-1"
+            style={{ 
+              backgroundColor: `${colors.danger}20`, 
+              borderColor: `${colors.danger}50` 
+            }}
+          >
+            <p className="text-xs font-bold" style={{ color: colors.card }}>
+              {error}
+            </p>
           </div>
         )}
       </div>
 
       <div className="space-y-5">
+        {/* Identity / Email Input */}
         <div className="space-y-2">
-          <label className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] ml-1">Identity</label>
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] ml-1 opacity-50" style={{ color: colors.card }}>
+            Identity
+          </label>
           <div className="relative">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 opacity-40" style={{ color: colors.card }} />
             <input 
-              type="email" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={onKeyDown}
+              type="email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              onKeyDown={onKeyDown}
               placeholder="name@provider.com" 
-              className="w-full pl-11 pr-4 py-4 rounded-2xl border border-white/10 bg-white text-slate-900 focus:outline-none focus:ring-4 focus:ring-emerald-400/20 transition-all font-medium" 
+              className="w-full pl-11 pr-4 py-4 border focus:outline-none transition-all font-medium" 
+              style={{ 
+                backgroundColor: colors.card,
+                color: colors.textMain,
+                borderColor: `${colors.card}10`,
+                borderRadius: radius.base,
+              }}
             />
           </div>
         </div>
 
+        {/* Security Key / Password Input */}
         <div className="space-y-2">
-          <label className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] ml-1">Security Key</label>
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] ml-1 opacity-50" style={{ color: colors.card }}>
+            Security Key
+          </label>
           <div className="relative">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 opacity-40" style={{ color: colors.card }} />
             <input 
-              type="password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={onKeyDown}
+              type="password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              onKeyDown={onKeyDown}
               placeholder="••••••••" 
-              className="w-full pl-11 pr-4 py-4 rounded-2xl border border-white/10 bg-white text-slate-900 focus:outline-none focus:ring-4 focus:ring-emerald-400/20 transition-all font-medium" 
+              className="w-full pl-11 pr-4 py-4 border focus:outline-none transition-all font-medium" 
+              style={{ 
+                backgroundColor: colors.card,
+                color: colors.textMain,
+                borderColor: `${colors.card}10`,
+                borderRadius: radius.base,
+              }}
             />
           </div>
         </div>
 
+        {/* Submit Action Button */}
         <button 
-          onClick={onAuth} disabled={loading} 
-          className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white font-black py-4 rounded-2xl hover:bg-emerald-400 shadow-lg transition-all active:scale-[0.97] disabled:opacity-50 mt-4"
+          onClick={onAuth} 
+          disabled={loading} 
+          className="w-full flex items-center justify-center gap-2 font-black py-4 shadow-lg transition-all active:scale-[0.97] disabled:opacity-50 mt-4"
+          style={{ 
+            backgroundColor: colors.primary,
+            color: colors.card, // White text on emerald button
+            borderRadius: radius.base
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.primaryDark}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
         >
-          {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : (
+          {loading ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
             <>{submitLabel} <ArrowRight className="h-4 w-4" /></>
           )}
         </button>
       </div>
 
-      {footerAction && <div className="mt-8 text-center">{footerAction}</div>}
+      {footerAction && (
+        <div className="mt-8 text-center" style={{ color: colors.card }}>
+          {footerAction}
+        </div>
+      )}
     </div>
   );
 }

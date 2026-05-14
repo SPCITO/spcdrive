@@ -1,10 +1,10 @@
 'use client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ReactNode } from 'react';
+import { useSPCTheme } from '@/providers/ThemeProvider';
 
 interface Column<T> {
   header: string;
-  // This function tells the table how to render the data for this specific cell
   render: (item: T, index: number) => ReactNode;
   align?: 'left' | 'right' | 'center';
 }
@@ -16,6 +16,8 @@ interface TableProps<T> {
 }
 
 export function Table<T>({ data, columns, emptyMessage = "No records found" }: TableProps<T>) {
+  const { colors } = useSPCTheme();
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-separate border-spacing-0">
@@ -24,17 +26,22 @@ export function Table<T>({ data, columns, emptyMessage = "No records found" }: T
             {columns.map((col, i) => (
               <th 
                 key={i} 
-                className={`pb-4 text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-50
+                className={`pb-4 text-[10px] font-black uppercase tracking-widest border-b
                   ${col.align === 'right' ? 'text-right' : ''}
                   ${col.align === 'center' ? 'text-center' : ''}
                 `}
+                style={{ 
+                  color: colors.textMuted,
+                  borderColor: colors.border 
+                }}
               >
                 {col.header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-50">
+        
+        <tbody className="divide-y" style={{ borderColor: colors.border }}>
           <AnimatePresence mode="popLayout">
             {data.length > 0 ? (
               data.map((item, idx) => (
@@ -43,17 +50,25 @@ export function Table<T>({ data, columns, emptyMessage = "No records found" }: T
                   key={(item as any).id || idx}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ delay: idx * 0.05, ease: "easeOut" }}
-                  className="group hover:bg-slate-50/50 transition-colors"
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ delay: idx * 0.03, ease: "easeOut" }}
+                  className="group transition-colors"
+                  // Using a very faint primary tint on hover
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = `${colors.primary}05`;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
                 >
                   {columns.map((col, colIdx) => (
                     <td 
                       key={colIdx} 
-                      className={`py-4 transition-colors
+                      className={`py-4 transition-colors text-sm font-medium
                         ${col.align === 'right' ? 'text-right' : ''}
                         ${col.align === 'center' ? 'text-center' : ''}
                       `}
+                      style={{ color: colors.textMain }}
                     >
                       {col.render(item, idx)}
                     </td>
@@ -62,7 +77,11 @@ export function Table<T>({ data, columns, emptyMessage = "No records found" }: T
               ))
             ) : (
               <tr>
-                <td colSpan={columns.length} className="py-12 text-center text-xs font-bold text-slate-300 uppercase tracking-widest">
+                <td 
+                  colSpan={columns.length} 
+                  className="py-12 text-center text-xs font-bold uppercase tracking-widest opacity-40"
+                  style={{ color: colors.textMuted }}
+                >
                   {emptyMessage}
                 </td>
               </tr>
