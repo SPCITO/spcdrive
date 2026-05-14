@@ -4,23 +4,22 @@ import { useUserDashboard } from '@/hooks/useUserDashboard';
 import { useSearch } from '@/hooks/useSearch';
 import { BentoCard } from '@/components/ui/BentoCard';
 import { DashboardShell } from '@/components/shells/DashboardShell';
-import { useSPCTheme } from '@/providers/ThemeProvider';
 import { FileBank } from '@/components/FileBank';
+import { Button } from '@/components/ui/Button';
 import { Loader2, ShieldCheck } from 'lucide-react';
 
 export default function UserDashboard() {
   const { user, logout, loading, files } = useUserDashboard();
-  const { colors } = useSPCTheme();
 
   // Use the search hook for file filtering
   const { query: searchQuery, setQuery: setSearchQuery, filteredData: filteredFiles } = useSearch(files, ['name', 'type']);
 
-  // Loading State (Thematic)
+  // Loading State (Aligned with brand colors)
   if (!user || loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: colors.background }}>
-        <Loader2 className="w-10 h-10 animate-spin" style={{ color: colors.primary }} />
-        <p className="mt-4 text-[10px] font-black uppercase tracking-[0.3em] animate-pulse" style={{ color: `${colors.primary}88` }}>
+      <div className="flex flex-col items-center justify-center h-screen bg-[#f7faf8]">
+        <Loader2 className="w-10 h-10 animate-spin text-emerald-600" />
+        <p className="mt-4 text-[10px] font-black uppercase tracking-[0.3em] animate-pulse text-emerald-600/60">
           Opening Your Drive...
         </p>
       </div>
@@ -39,17 +38,14 @@ export default function UserDashboard() {
         {/* Profile Identity Card */}
         <BentoCard className="md:col-span-4">
           <div className="flex items-center gap-5 p-2">
-            <div 
-              className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg transition-transform hover:scale-105 duration-300"
-              style={{ backgroundColor: colors.primary }}
-            >
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg bg-emerald-600 shadow-emerald-600/20 transition-transform hover:scale-105 duration-300">
               {user.name.charAt(0)}
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-0.5" style={{ color: `${colors.primary}66` }}>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-0.5 text-emerald-600/40">
                 Authenticated Node
               </p>
-              <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: colors.textMain }}>
+              <h2 className="text-2xl font-black tracking-tight leading-none text-slate-900">
                 {user.name}
               </h2>
               <div className="flex items-center gap-2 mt-2">
@@ -75,16 +71,16 @@ export default function UserDashboard() {
           <div className="mt-2 space-y-3">
             <div className="flex justify-between items-end">
               <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600/40">Storage Efficiency</span>
-              <span className="text-xs font-black tracking-tighter" style={{ color: colors.textMain }}>66% Utilized</span>
+              <span className="text-xs font-black tracking-tighter text-slate-900">66% Utilized</span>
             </div>
             
             <div className="relative h-2.5 w-full bg-emerald-500/5 rounded-full overflow-hidden">
               <div 
-                className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out" 
-                style={{ width: '66%', backgroundColor: colors.primary }} 
+                className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out bg-emerald-600" 
+                style={{ width: '66%' }} 
               />
             </div>
-            <p className="text-[9px] font-black uppercase tracking-tighter opacity-30">
+            <p className="text-[9px] font-black uppercase tracking-tighter opacity-30 text-slate-900">
               8.4 GB of 12.0 GB remaining
             </p>
           </div>
@@ -95,7 +91,7 @@ export default function UserDashboard() {
           <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
             <ShieldCheck className="w-6 h-6" />
           </div>
-          <div>
+          <div className="flex-1">
             <p className="text-[10px] font-black uppercase text-emerald-600 tracking-[0.15em]">
               Security: Restricted
             </p>
@@ -103,6 +99,10 @@ export default function UserDashboard() {
               Read-Only Access Enabled
             </p>
           </div>
+          {/* Example of adding a helper button using the new component */}
+          <Button variant="ghost" size="sm">
+            Learn More
+          </Button>
         </BentoCard>
 
       </div>
