@@ -9,7 +9,7 @@ import {
   CheckCircle2, Upload, Users, Sparkles,
 } from "lucide-react";
 
-// Import your new component
+// Using the new centralized Button component
 import { Button } from "@/components/ui/Button";
 
 const FEATURES = [
@@ -29,7 +29,7 @@ export default function Home() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#f7faf8] text-slate-900">
       
-      {/* ================= BACKGROUND ================= */}
+     {/* ================= BACKGROUND ================= */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <Image
           src="/assets/green.png"
@@ -39,13 +39,16 @@ export default function Home() {
           className="object-cover object-center scale-105 opacity-20"
         />
         <div className="absolute inset-0 bg-linear-to-b from-white/80 via-white/90 to-[#f7faf8]" />
+        
+        {/* Linter-friendly canonical classes applied here */}
         <div className="absolute left-1/2 -top-56 h-150 w-150 -translate-x-1/2 rounded-full bg-emerald-200/30 blur-3xl" />
         <div className="absolute -bottom-50 -right-25 h-125 w-125 rounded-full bg-green-200/20 blur-3xl" />
+        
         <div
-          className="absolute inset-0 opacity-[0.02]"
+          className="absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage: "linear-gradient(to right,#000 1px,transparent 1px),linear-gradient(to bottom,#000 1px,transparent 1px)",
-            backgroundSize: "80px 80px",
+            backgroundSize: "60px 60px",
           }}
         />
       </div>
@@ -54,7 +57,7 @@ export default function Home() {
       <nav className={`fixed top-0 z-50 w-full transition-all duration-700 ${isLoaded ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}`}>
         <div className="mx-auto mt-5 flex max-w-7xl items-center justify-between rounded-2xl border border-white/60 bg-white/70 px-6 py-4 shadow-lg backdrop-blur-xl">
           <div className="flex items-center gap-3">
-            <div className="relative h-11 w-11 overflow-hidden rounded-2xl bg-white border border-slate-200 flex items-center justify-center">
+            <div className="relative h-11 w-11 overflow-hidden rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
               <Image src="/assets/SPCLOGO.avif" alt="SPC" fill className="object-contain p-2" />
             </div>
             <div>
@@ -67,7 +70,7 @@ export default function Home() {
 
           <div className="flex items-center gap-6">
             <Link href="/dashboard/auth">
-              <Button variant="primary" size="default" rightIcon={<ArrowRight className="h-4 w-4" />}>
+              <Button size="default" rightIcon={<ArrowRight className="h-4 w-4" />}>
                 Get Started
               </Button>
             </Link>
@@ -76,7 +79,7 @@ export default function Home() {
       </nav>
 
       {/* ================= HERO ================= */}
-      <main className="relative mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-6 pt-36">
+      <main className="relative mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-6 pt-36 pb-20">
         <section className={`transition-all duration-1000 ${isLoaded ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
           <div className="grid items-center gap-20 lg:grid-cols-2">
 
@@ -97,7 +100,7 @@ export default function Home() {
 
               <div className="mt-10 flex flex-col gap-4 sm:flex-row">
                 <Link href="/dashboard/auth">
-                  <Button variant="primary" size="lg" className="w-full sm:w-auto" rightIcon={<ArrowRight className="h-4 w-4" />}>
+                  <Button size="lg" className="w-full sm:w-auto" rightIcon={<ArrowRight className="h-4 w-4" />}>
                     Enter Platform
                   </Button>
                 </Link>
@@ -109,7 +112,7 @@ export default function Home() {
 
             {/* RIGHT PREVIEW CARD */}
             <div className="relative">
-              <div className="overflow-hidden rounded-4xl border border-white bg-white/90 p-7 shadow-2xl">
+              <div className="overflow-hidden rounded-[2.5rem] border border-white bg-white/90 p-7 shadow-2xl">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-6">
                   <div>
                     <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Storage Overview</p>
@@ -138,6 +141,7 @@ export default function Home() {
                   ))}
                 </div>
 
+                {/* FIXED CSS CONFLICT HERE */}
                 <div className="mt-6 rounded-2xl bg-emerald-600 p-5 text-white shadow-lg shadow-emerald-600/10">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-md">
@@ -145,7 +149,9 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="font-bold">Clean & simple</p>
-                      <p className="text-sm opacity-90 font-medium text-emerald-50 text-emerald-50">Built for stress-free management.</p>
+                      <p className="text-sm opacity-90 font-medium text-emerald-50">
+                        Built for stress-free management.
+                      </p>
                     </div>
                   </div>
                 </div>
