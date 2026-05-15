@@ -1,17 +1,13 @@
 'use client';
 import { useState } from 'react';
 import { UserManagementData } from '@/types/dashboard';
-
-const MOCK_USERS: UserManagementData[] = [
-  { id: '1', name: 'John Doe', email: 'john@spc.com', role: 'admin', status: 'active' },
-  { id: '2', name: 'Sarah Smith', email: 'sarah@spc.com', role: 'user', status: 'pending' },
-  { id: '3', name: 'Mike Ross', email: 'mike@spc.com', role: 'user', status: 'disabled' },
-];
+import { MOCK_USERS, MockUser } from '@/lib/mock-data';
 
 export function useUserManagement() {
-  const [users, setUsers] = useState<UserManagementData[]>(MOCK_USERS);
+  // Use the MockUser type so the state 'remembers' passwords
+  const [users, setUsers] = useState<MockUser[]>(MOCK_USERS);
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<UserManagementData | null>(null);
+  const [selectedUser, setSelectedUser] = useState<MockUser | null>(null);
 
   const toggleStatus = (id: string) => {
     setUsers(prev => prev.map(u => 
@@ -23,7 +19,18 @@ export function useUserManagement() {
     setUsers(prev => prev.map(u => u.id === id ? { ...u, status: 'active' } : u));
   };
 
-  const openEdit = (user: UserManagementData) => {
+  /**
+   * updateUserDetails
+   * This is where the Admin saves changes to Name, Email, or Password.
+   */
+  const updateUserDetails = (updatedUser: MockUser) => {
+    setUsers(prev => prev.map(u => 
+      u.id === updatedUser.id ? { ...u, ...updatedUser } : u
+    ));
+    closeEdit();
+  };
+
+  const openEdit = (user: MockUser) => {
     setSelectedUser(user);
     setIsEditing(true);
   };
@@ -40,6 +47,7 @@ export function useUserManagement() {
     selectedUser,
     toggleStatus,
     approveUser,
+    updateUserDetails, // Now supports password updates
     openEdit,
     closeEdit
   };
