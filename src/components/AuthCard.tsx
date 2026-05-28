@@ -13,23 +13,29 @@ export function AuthCard(props: AuthCardProps) {
     <div className={`w-full max-w-md transition-all duration-500 ${switching ? 'opacity-0 scale-95 blur-sm' : 'opacity-100 scale-100'}`}>
       
       {/* Brand Header */}
-      <div className="flex justify-center mb-10">
-        <Link href="/" className="flex items-center gap-3 group">
-          <div 
-            className="relative w-11 h-11 border shadow-lg overflow-hidden transition-transform group-hover:scale-105"
-            style={{ 
-              backgroundColor: `${colors.card}33`, // 20% opacity card white
-              borderColor: `${colors.card}33`,
-              borderRadius: '1rem' 
-            }}
-          >
-            <Image src="/assets/SPCLOGO.avif" alt="Logo" fill className="object-contain p-2" />
-          </div>
-          <span className="font-black text-xl tracking-tight text-white drop-shadow-md">
-            SPC <span style={{ color: colors.primary }}>Drive</span>
-          </span>
-        </Link>
-      </div>
+    <div className="flex justify-center mb-10">
+      <Link href="/" className="flex items-center gap-3 group">
+        <div 
+          className="relative w-11 h-11 border shadow-lg overflow-hidden transition-transform group-hover:scale-105"
+          style={{ 
+            backgroundColor: `${colors.card}33`, // 20% opacity card white
+            borderColor: `${colors.card}33`,
+            borderRadius: '1rem' 
+          }}
+        >
+          <Image 
+            src="/assets/SPCLOGO.avif" 
+            alt="Logo" 
+            fill 
+            sizes="44px" // <--- ADDED THIS TO RESOLVE BROWSER PERFORMANCE WARNING
+            className="object-contain p-2" 
+          />
+        </div>
+        <span className="font-black text-xl tracking-tight text-white drop-shadow-md">
+          SPC <span style={{ color: colors.primary }}>Drive</span>
+        </span>
+      </Link>
+    </div>
 
       {/* Main Auth Form UI */}
       <AuthForm 

@@ -30,6 +30,7 @@ function AuthContent() {
           alt="Background" 
           fill 
           priority 
+          sizes="100vw"
           className="object-cover scale-105" 
         />
       </div>
