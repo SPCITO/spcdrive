@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 import { useSPCTheme } from '@/providers/ThemeProvider';
 
 interface Column<T> {
-  header: string;
+  header: React.ReactNode;
   render: (item: T, index: number) => ReactNode;
   align?: 'left' | 'right' | 'center';
 }
@@ -15,60 +15,62 @@ interface TableProps<T> {
   emptyMessage?: string;
 }
 
-export function Table<T>({ data, columns, emptyMessage = "No records found" }: TableProps<T>) {
+export function Table<T>({ data, columns, emptyMessage = 'No records found' }: TableProps<T>) {
   const { colors } = useSPCTheme();
+
+  const alignClass = (align?: 'left' | 'right' | 'center') => {
+    if (align === 'right') return 'text-right';
+    if (align === 'center') return 'text-center';
+    return 'text-left';
+  };
 
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-separate border-spacing-0">
         <thead>
-          <tr className="text-left">
+          <tr>
             {columns.map((col, i) => (
-              <th 
-                key={i} 
-                className={`pb-4 text-[10px] font-black uppercase tracking-widest border-b
-                  ${col.align === 'right' ? 'text-right' : ''}
-                  ${col.align === 'center' ? 'text-center' : ''}
-                `}
-                style={{ 
-                  color: colors.textMuted,
-                  borderColor: colors.border 
-                }}
+              <th
+                key={i}
+                className={`pb-4 text-[10px] font-black uppercase tracking-widest border-b ${alignClass(col.align)}`}
+                style={{ color: colors.textMuted, borderColor: colors.border }}
               >
                 {col.header}
               </th>
             ))}
           </tr>
         </thead>
-        
-        <tbody className="divide-y" style={{ borderColor: colors.border }}>
-          <AnimatePresence mode="popLayout">
+
+        <tbody>
+          <AnimatePresence mode="popLayout" initial={false}>
             {data.length > 0 ? (
               data.map((item, idx) => (
                 <motion.tr
+                  // motion.tr is valid — Framer Motion does NOT wrap in a div,
+                  // it applies transforms directly to the element via style.
+                  key={(item as any).id ?? idx}
                   layout
-                  key={(item as any).id || idx}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ delay: idx * 0.03, ease: "easeOut" }}
-                  className="group transition-colors"
-                  // Using a very faint primary tint on hover
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ delay: idx * 0.03, ease: 'easeOut', duration: 0.15 }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = `${colors.primary}05`;
+                    e.currentTarget.style.backgroundColor = `${colors.primary}08`;
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = 'transparent';
                   }}
+                  style={{ transition: 'background-color 0.15s' }}
                 >
                   {columns.map((col, colIdx) => (
-                    <td 
-                      key={colIdx} 
-                      className={`py-4 transition-colors text-sm font-medium
-                        ${col.align === 'right' ? 'text-right' : ''}
-                        ${col.align === 'center' ? 'text-center' : ''}
-                      `}
-                      style={{ color: colors.textMain }}
+                    <td
+                      key={colIdx}
+                      className={`py-4 text-sm font-medium ${alignClass(col.align)}`}
+                      style={{
+                        color: colors.textMain,
+                        // Row divider applied per-cell so it survives AnimatePresence
+                        borderBottom: `1px solid ${colors.border}`,
+                      }}
                     >
                       {col.render(item, idx)}
                     </td>
@@ -76,9 +78,9 @@ export function Table<T>({ data, columns, emptyMessage = "No records found" }: T
                 </motion.tr>
               ))
             ) : (
-              <tr>
-                <td 
-                  colSpan={columns.length} 
+              <tr key="empty">
+                <td
+                  colSpan={columns.length}
                   className="py-12 text-center text-xs font-bold uppercase tracking-widest opacity-40"
                   style={{ color: colors.textMuted }}
                 >
