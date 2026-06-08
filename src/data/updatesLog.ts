@@ -14,6 +14,26 @@ export interface UpdateLog {
 
 export const updatesRegistry: UpdateLog[] = [
   {
+    id: "v-1-1-2",
+    version: "v1.1.2",
+    deploymentDate: "2026-06-08 11:15 AM",
+    author: "LEAD_DEV",
+    environment: "production",
+    summary: "Optimized workspace components for dense mobile device contexts and touch ergonomics.",
+    modifications: [
+      {
+        type: "patch",
+        scope: "Category Creation Interface",
+        description: "Re-engineered the admin folder creation sub-toolbar with a responsive vertical-to-horizontal flex arrangement, preventing UI crunching and text overflow on narrow viewports."
+      },
+      {
+        type: "patch",
+        scope: "Mobile Form Action Targets",
+        description: "Expanded Save and Cancel CTA triggers to scale symmetrically to full screen-width containers on micro-viewports, optimizing tactile tap targets."
+      }
+    ]
+  },
+  {
     id: "v-1-1-1",
     version: "v1.1.1",
     deploymentDate: "2026-06-08 10:45 AM",
