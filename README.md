@@ -1,10 +1,10 @@
-# SPC Drive 🚀
+# SPC Drive 
 
 SPC Drive is a secure, high-performance Cloud File Storage System built to centralize internal company workflows and provide customers with seamless, fast access to their files. 
 
 This is a full-stack application developed independently using the modern **Next.js (App Router)** ecosystem, engineered for speed, scalability, and seamless mobile responsiveness.
 
-## 🛠️ Tech Stack & Key Features
+##  Tech Stack & Key Features
 
 * **Framework:** Next.js (App Router) with TypeScript
 * **Deployment & Edge Optimization:** Vercel
@@ -15,7 +15,7 @@ This is a full-stack application developed independently using the modern **Next
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 Ensure you have Node.js installed on your machine.
@@ -27,4 +27,5 @@ Ensure you have Node.js installed on your machine.
    cd spc-drive
 
    2. npm install
+   
    3. Run the development server:
