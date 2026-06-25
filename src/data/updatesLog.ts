@@ -32,6 +32,7 @@ export const updatesRegistry: UpdateLog[] = [
         description: "Injected local state mutators into category deletion pipelines. purging a category now automatically reassigns orphan assets to 'Not Categorized' instantly in the UI with zero reload friction."
       },
       {
+        //test
         type: "security",
         scope: "Identity Management API",
         description: "Expanded core database mutation logic within user management hooks and profile modals to securely support editing account routing emails alongside display name records."
