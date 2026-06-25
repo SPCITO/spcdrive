@@ -13,6 +13,7 @@ export interface UpdateLog {
 }
 
 export const updatesRegistry: UpdateLog[] = [
+  //test
   {
     id: "v-1-1-4",
     version: "v1.1.4",
